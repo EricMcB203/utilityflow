@@ -4,24 +4,56 @@ import CreateInspection from "./components/CreateInspection";
 import AIPlan from "./components/AIPlan";
 
 export default async function Home() {
-  const { data: assets } = await supabase
-    .from("assets")
-    .select("*");
+  const { data: assets, error: assetsError } =
+    await supabase
+      .from("assets")
+      .select("*");
 
-  const { data: workOrders } = await supabase
-    .from("work_orders")
-    .select("*");
+  const { data: workOrders } =
+    await supabase
+      .from("work_orders")
+      .select("*");
 
-  const { data: inspections } = await supabase
-    .from("inspections")
-    .select("*")
-    .order("created_at", {
-      ascending: false,
-    });
+  const { data: inspections } =
+    await supabase
+      .from("inspections")
+      .select("*")
+      .order("created_at", {
+        ascending: false,
+      });
+
+  console.log("ASSETS:", assets);
+  console.log("ASSETS ERROR:", assetsError);
 
   return (
     <main style={{ padding: "30px" }}>
       <h1>UtilityFlow Asset Dashboard</h1>
+
+      <h2>Debug Information</h2>
+
+      <pre
+        style={{
+          background: "#f3f3f3",
+          padding: "10px",
+          borderRadius: "8px",
+        }}
+      >
+        Assets Count: {assets?.length ?? 0}
+      </pre>
+
+      <pre
+        style={{
+          background: "#f3f3f3",
+          padding: "10px",
+          borderRadius: "8px",
+        }}
+      >
+        {JSON.stringify(
+          assetsError,
+          null,
+          2
+        )}
+      </pre>
 
       <Map assets={assets ?? []} />
 
@@ -58,11 +90,13 @@ export default async function Home() {
           <ul>
             {workOrders
               ?.filter(
-                (wo) => wo.asset_id === asset.id
+                (wo) =>
+                  wo.asset_id === asset.id
               )
               .map((wo) => (
                 <li key={wo.id}>
-                  {wo.work_type} - {wo.priority}
+                  {wo.work_type} -{" "}
+                  {wo.priority}
                 </li>
               ))}
           </ul>
@@ -73,17 +107,17 @@ export default async function Home() {
             {inspections
               ?.filter(
                 (inspection) =>
-                  inspection.asset_id === asset.id
+                  inspection.asset_id ===
+                  asset.id
               )
               .map((inspection) => (
                 <li
                   key={inspection.id}
-                  style={{
-                    marginBottom: "15px",
-                  }}
                 >
                   <strong>
-                    {inspection.inspection_type}
+                    {
+                      inspection.inspection_type
+                    }
                   </strong>
 
                   {" - "}
@@ -94,14 +128,6 @@ export default async function Home() {
 
                   <small>
                     {inspection.notes}
-                  </small>
-
-                  <br />
-
-                  <small>
-                    {new Date(
-                      inspection.created_at
-                    ).toLocaleString()}
                   </small>
                 </li>
               ))}
