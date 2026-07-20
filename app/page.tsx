@@ -29,7 +29,13 @@ export default async function Home() {
     <main style={{ padding: "30px" }}>
       <h1>UtilityFlow Asset Dashboard</h1>
 
-      <h2>Debug Information</h2>
+      <h2
+        style={{
+          color: "red",
+        }}
+      >
+        DEPLOYMENT TEST 123
+      </h2>
 
       <pre
         style={{
@@ -85,6 +91,16 @@ export default async function Home() {
             {asset.status}
           </p>
 
+          <p>
+            <strong>Latitude:</strong>{" "}
+            {asset.latitude}
+          </p>
+
+          <p>
+            <strong>Longitude:</strong>{" "}
+            {asset.longitude}
+          </p>
+
           <h3>Open Work Orders</h3>
 
           <ul>
@@ -113,6 +129,10 @@ export default async function Home() {
               .map((inspection) => (
                 <li
                   key={inspection.id}
+                  style={{
+                    marginBottom:
+                      "10px",
+                  }}
                 >
                   <strong>
                     {
@@ -128,6 +148,14 @@ export default async function Home() {
 
                   <small>
                     {inspection.notes}
+                  </small>
+
+                  <br />
+
+                  <small>
+                    {new Date(
+                      inspection.created_at
+                    ).toLocaleString()}
                   </small>
                 </li>
               ))}
