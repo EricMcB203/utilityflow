@@ -2,70 +2,52 @@ import { supabase } from "../lib/supabase";
 import Map from "./components/Map";
 import CreateInspection from "./components/CreateInspection";
 import AIPlan from "./components/AIPlan";
+import AssetPanel from "./components/AssetPanel";
 
 export default async function Home() {
-  const { data: assets, error: assetsError } =
-    await supabase
-      .from("assets")
-      .select("*");
+  const { data: assets } = await supabase
+    .from("assets")
+    .select("*");
 
-  const { data: workOrders } =
-    await supabase
-      .from("work_orders")
-      .select("*");
+  const { data: workOrders } = await supabase
+    .from("work_orders")
+    .select("*");
 
-  const { data: inspections } =
-    await supabase
-      .from("inspections")
-      .select("*")
-      .order("created_at", {
-        ascending: false,
-      });
+  const { data: inspections } = await supabase
+    .from("inspections")
+    .select("*")
+    .order("created_at", {
+      ascending: false,
+    });
 
-  console.log("ASSETS:", assets);
-  console.log("ASSETS ERROR:", assetsError);
+  const selectedAsset =
+    assets && assets.length > 0
+      ? assets[0]
+      : null;
 
   return (
     <main style={{ padding: "30px" }}>
       <h1>UtilityFlow Asset Dashboard</h1>
 
-      <h2
+      <div
         style={{
-          color: "red",
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: "20px",
+          alignItems: "start",
         }}
       >
-        DEPLOYMENT TEST 123
-      </h2>
+        <div>
+          <Map assets={assets ?? []} />
+        </div>
 
-      <pre
-        style={{
-          background: "#f3f3f3",
-          padding: "10px",
-          borderRadius: "8px",
-        }}
-      >
-        Assets Count: {assets?.length ?? 0}
-      </pre>
+        <AssetPanel
+          asset={selectedAsset}
+        />
+      </div>
 
-      <pre
-        style={{
-          background: "#f3f3f3",
-          padding: "10px",
-          borderRadius: "8px",
-        }}
-      >
-        {JSON.stringify(
-          assetsError,
-          null,
-          2
-        )}
-      </pre>
-
-      <Map assets={assets ?? []} />
-
-      {assets?.map((asset) => (
+      {selectedAsset && (
         <div
-          key={asset.id}
           style={{
             border: "1px solid #ddd",
             padding: "20px",
@@ -74,31 +56,29 @@ export default async function Home() {
             backgroundColor: "#fff",
           }}
         >
-          <h2>{asset.asset_name}</h2>
+          <h2>
+            {selectedAsset.asset_name}
+          </h2>
 
           <p>
-            <strong>Asset Number:</strong>{" "}
-            {asset.asset_number}
+            <strong>
+              Asset Number:
+            </strong>{" "}
+            {
+              selectedAsset.asset_number
+            }
           </p>
 
           <p>
             <strong>Type:</strong>{" "}
-            {asset.asset_type}
+            {
+              selectedAsset.asset_type
+            }
           </p>
 
           <p>
             <strong>Status:</strong>{" "}
-            {asset.status}
-          </p>
-
-          <p>
-            <strong>Latitude:</strong>{" "}
-            {asset.latitude}
-          </p>
-
-          <p>
-            <strong>Longitude:</strong>{" "}
-            {asset.longitude}
+            {selectedAsset.status}
           </p>
 
           <h3>Open Work Orders</h3>
@@ -107,7 +87,8 @@ export default async function Home() {
             {workOrders
               ?.filter(
                 (wo) =>
-                  wo.asset_id === asset.id
+                  wo.asset_id ===
+                  selectedAsset.id
               )
               .map((wo) => (
                 <li key={wo.id}>
@@ -117,14 +98,16 @@ export default async function Home() {
               ))}
           </ul>
 
-          <h3>Inspection History</h3>
+          <h3>
+            Inspection History
+          </h3>
 
           <ul>
             {inspections
               ?.filter(
                 (inspection) =>
                   inspection.asset_id ===
-                  asset.id
+                  selectedAsset.id
               )
               .map((inspection) => (
                 <li
@@ -142,7 +125,9 @@ export default async function Home() {
 
                   {" - "}
 
-                  {inspection.result}
+                  {
+                    inspection.result
+                  }
 
                   <br />
 
@@ -162,7 +147,9 @@ export default async function Home() {
           </ul>
 
           <CreateInspection
-            assetId={asset.id}
+            assetId={
+              selectedAsset.id
+            }
           />
 
           <div
@@ -173,7 +160,7 @@ export default async function Home() {
             <AIPlan />
           </div>
         </div>
-      ))}
+      )}
     </main>
   );
 }
