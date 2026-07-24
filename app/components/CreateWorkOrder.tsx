@@ -13,30 +13,67 @@ export default function CreateWorkOrder({
   const [priority, setPriority] =
     useState("Medium");
 
-  async function saveWorkOrder() {
-    const response = await fetch(
-      "/api/workorders",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          asset_id: assetId,
-          work_type: workType,
-          priority: priority,
-          status: "Open",
-        }),
-      }
-    );
+  const [saving, setSaving] =
+    useState(false);
 
-    if (response.ok) {
-      alert("Work Order Created");
-      window.location.reload();
-    } else {
-      alert("Error Creating Work Order");
+  async function saveWorkOrder() {
+    if (!workType.trim()) {
+      alert("Please enter a work type.");
+      return;
     }
+
+    setSaving(true);
+
+    try {
+      const response = await fetch(
+        "/api/workorders",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            asset_id: assetId,
+            work_type: workType,
+            priority,
+            status: "Open",
+          }),
+        }
+      );
+
+      if (response.ok) {
+        alert(
+          "✅ Work Order Created Successfully"
+        );
+
+        setWorkType("");
+        setPriority("Medium");
+
+        /*
+          Temporary solution:
+          We still refresh so the
+          new work order appears.
+
+          Next sprint we'll remove
+          this entirely and update
+          the UI instantly.
+        */
+        window.location.reload();
+      } else {
+        alert(
+          "❌ Error Creating Work Order"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "❌ Unexpected Error Creating Work Order"
+      );
+    }
+
+    setSaving(false);
   }
 
   return (
@@ -55,7 +92,10 @@ export default function CreateWorkOrder({
         }
         style={{
           width: "100%",
+          padding: "8px",
           marginBottom: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
         }}
       />
 
@@ -64,10 +104,24 @@ export default function CreateWorkOrder({
         onChange={(e) =>
           setPriority(e.target.value)
         }
+        style={{
+          width: "100%",
+          padding: "8px",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+        }}
       >
-        <option>Low</option>
-        <option>Medium</option>
-        <option>High</option>
+        <option value="Low">
+          Low
+        </option>
+
+        <option value="Medium">
+          Medium
+        </option>
+
+        <option value="High">
+          High
+        </option>
       </select>
 
       <br />
@@ -75,8 +129,11 @@ export default function CreateWorkOrder({
 
       <button
         onClick={saveWorkOrder}
+        disabled={saving}
       >
-        Create Work Order
+        {saving
+          ? "Creating..."
+          : "Create Work Order"}
       </button>
     </div>
   );

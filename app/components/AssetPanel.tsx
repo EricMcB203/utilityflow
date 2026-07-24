@@ -23,7 +23,6 @@ export default function AssetPanel({
           border: "1px solid #ddd",
           borderRadius: "12px",
           backgroundColor: "#fff",
-          minHeight: "700px",
         }}
       >
         <h2>Asset Details</h2>
@@ -47,6 +46,40 @@ export default function AssetPanel({
         inspection.asset_id === asset.id
     ) ?? [];
 
+  function getHealthScore() {
+    switch (asset.asset_type) {
+      case "Valve":
+        return {
+          score: 92,
+          color: "#10b981",
+          icon: "🟢",
+        };
+
+      case "Regulator":
+        return {
+          score: 78,
+          color: "#f59e0b",
+          icon: "🟡",
+        };
+
+      case "Meter":
+        return {
+          score: 96,
+          color: "#10b981",
+          icon: "🟢",
+        };
+
+      default:
+        return {
+          score: 85,
+          color: "#3b82f6",
+          icon: "🔵",
+        };
+    }
+  }
+
+  const health = getHealthScore();
+
   return (
     <div
       style={{
@@ -54,10 +87,37 @@ export default function AssetPanel({
         border: "1px solid #ddd",
         borderRadius: "12px",
         backgroundColor: "#fff",
-        minHeight: "700px",
       }}
     >
       <h2>{asset.asset_name}</h2>
+
+      <div
+        style={{
+          background: "#f5f5f5",
+          padding: "15px",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "14px",
+            color: "#666",
+          }}
+        >
+          Asset Health Score
+        </div>
+
+        <div
+          style={{
+            fontSize: "28px",
+            fontWeight: "bold",
+            color: health.color,
+          }}
+        >
+          {health.icon} {health.score}%
+        </div>
+      </div>
 
       <p>
         <strong>Asset Number:</strong>{" "}
@@ -74,16 +134,6 @@ export default function AssetPanel({
         {asset.status}
       </p>
 
-      <p>
-        <strong>Latitude:</strong>{" "}
-        {asset.latitude}
-      </p>
-
-      <p>
-        <strong>Longitude:</strong>{" "}
-        {asset.longitude}
-      </p>
-
       <hr />
 
       <h3>Open Work Orders</h3>
@@ -94,38 +144,34 @@ export default function AssetPanel({
           padding: 0,
         }}
       >
-        {assetWorkOrders.length === 0 ? (
-          <li>No work orders.</li>
-        ) : (
-          assetWorkOrders.map((wo) => (
-            <li
-              key={wo.id}
-              onClick={() =>
-                onSelectWorkOrder(wo)
-              }
-              style={{
-                cursor: "pointer",
-                padding: "10px",
-                marginBottom: "10px",
-                border: "1px solid #ddd",
-                borderRadius: "8px",
-                backgroundColor: "#f5f5f5",
-              }}
-            >
-              <strong>
-                {wo.work_type}
-              </strong>
+        {assetWorkOrders.map((wo) => (
+          <li
+            key={wo.id}
+            onClick={() =>
+              onSelectWorkOrder(wo)
+            }
+            style={{
+              cursor: "pointer",
+              padding: "10px",
+              marginBottom: "10px",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              backgroundColor: "#f5f5f5",
+            }}
+          >
+            <strong>
+              {wo.work_type}
+            </strong>
 
-              <br />
+            <br />
 
-              Priority: {wo.priority}
+            Priority: {wo.priority}
 
-              <br />
+            <br />
 
-              Status: {wo.status}
-            </li>
-          ))
-        )}
+            Status: {wo.status}
+          </li>
+        ))}
       </ul>
 
       <hr />
@@ -138,36 +184,32 @@ export default function AssetPanel({
           padding: 0,
         }}
       >
-        {assetInspections.length === 0 ? (
-          <li>No inspections.</li>
-        ) : (
-          assetInspections.map(
-            (inspection) => (
-              <li
-                key={inspection.id}
-                style={{
-                  padding: "8px",
-                  marginBottom: "8px",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                  backgroundColor: "#f9f9f9",
-                }}
-              >
-                <strong>
-                  {inspection.inspection_type}
-                </strong>
+        {assetInspections.map(
+          (inspection) => (
+            <li
+              key={inspection.id}
+              style={{
+                padding: "8px",
+                marginBottom: "8px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                backgroundColor: "#f9f9f9",
+              }}
+            >
+              <strong>
+                {inspection.inspection_type}
+              </strong>
 
-                {" - "}
+              {" - "}
 
-                {inspection.result}
+              {inspection.result}
 
-                <br />
+              <br />
 
-                <small>
-                  {inspection.notes}
-                </small>
-              </li>
-            )
+              <small>
+                {inspection.notes}
+              </small>
+            </li>
           )
         )}
       </ul>
