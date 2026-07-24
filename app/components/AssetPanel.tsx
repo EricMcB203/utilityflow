@@ -29,8 +29,8 @@ export default function AssetPanel({
         <h2>Asset Details</h2>
 
         <p>
-          Click a marker on the map to view asset
-          details.
+          Click a marker on the map to view
+          asset details.
         </p>
       </div>
     );
@@ -105,14 +105,24 @@ export default function AssetPanel({
               }
               style={{
                 cursor: "pointer",
-                padding: "8px",
-                marginBottom: "8px",
+                padding: "10px",
+                marginBottom: "10px",
                 border: "1px solid #ddd",
                 borderRadius: "8px",
                 backgroundColor: "#f5f5f5",
               }}
             >
-              {wo.work_type} - {wo.priority}
+              <strong>
+                {wo.work_type}
+              </strong>
+
+              <br />
+
+              Priority: {wo.priority}
+
+              <br />
+
+              Status: {wo.status}
             </li>
           ))
         )}

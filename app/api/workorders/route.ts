@@ -28,3 +28,27 @@ export async function POST(
     success: true,
   });
 }
+
+export async function PATCH(
+  request: Request
+) {
+  const body = await request.json();
+
+  const { error } = await supabase
+    .from("work_orders")
+    .update({
+      status: body.status,
+    })
+    .eq("id", body.id);
+
+  if (error) {
+    return NextResponse.json(
+      { error },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({
+    success: true,
+  });
+}

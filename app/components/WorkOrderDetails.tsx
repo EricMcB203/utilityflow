@@ -1,3 +1,5 @@
+"use client";
+
 type WorkOrderDetailsProps = {
   workOrder: any;
 };
@@ -13,12 +15,43 @@ export default function WorkOrderDetails({
           padding: "15px",
           border: "1px solid #ddd",
           borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
+          backgroundColor: "#fff",
         }}
       >
         Select a work order.
       </div>
     );
+  }
+
+  async function updateStatus(
+    status: string
+  ) {
+    const response = await fetch(
+      "/api/workorders",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          id: workOrder.id,
+          status,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      alert(
+        "Status Updated"
+      );
+
+      window.location.reload();
+    } else {
+      alert(
+        "Error Updating Status"
+      );
+    }
   }
 
   return (
@@ -48,6 +81,42 @@ export default function WorkOrderDetails({
         {workOrder.status}
       </p>
 
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          marginTop: "15px",
+        }}
+      >
+        <button
+          onClick={() =>
+            updateStatus("Open")
+          }
+        >
+          Open
+        </button>
+
+        <button
+          onClick={() =>
+            updateStatus(
+              "In Progress"
+            )
+          }
+        >
+          In Progress
+        </button>
+
+        <button
+          onClick={() =>
+            updateStatus(
+              "Completed"
+            )
+          }
+        >
+          Completed
+        </button>
+      </div>
+
       <hr />
 
       <h3>Recommended Crew</h3>
@@ -61,15 +130,6 @@ export default function WorkOrderDetails({
         <li>Safety Glasses</li>
         <li>Gloves</li>
       </ul>
-
-      <h3>Immediate Actions</h3>
-
-      <ol>
-        <li>Verify leak location</li>
-        <li>Establish safe work zone</li>
-        <li>Perform inspection</li>
-        <li>Document findings</li>
-      </ol>
     </div>
   );
 }
