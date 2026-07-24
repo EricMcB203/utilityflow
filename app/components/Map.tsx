@@ -8,14 +8,18 @@ type Asset = {
   id: string;
   asset_name: string;
   asset_number: string;
+  asset_type?: string;
+  status?: string;
   latitude?: number;
   longitude?: number;
 };
 
 export default function Map({
   assets,
+  onSelectAsset,
 }: {
   assets: Asset[];
+  onSelectAsset: (asset: Asset) => void;
 }) {
   const mapContainer = useRef<HTMLDivElement>(null);
 
@@ -29,37 +33,41 @@ export default function Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v12",
       center: [-104.9903, 39.7392],
-      zoom: 13,
+      zoom: 12,
     });
-console.log(assets);
-    assets.forEach((asset) => {
-      if (!asset.longitude || !asset.latitude) return;
 
-      new mapboxgl.Marker()
+    assets.forEach((asset) => {
+      if (
+        asset.latitude == null ||
+        asset.longitude == null
+      ) {
+        return;
+      }
+
+      const marker = new mapboxgl.Marker()
         .setLngLat([
           asset.longitude,
           asset.latitude,
         ])
-        .setPopup(
-          new mapboxgl.Popup().setHTML(
-            `
-            <h3>${asset.asset_name}</h3>
-            <p>${asset.asset_number}</p>
-          `
-          )
-        )
         .addTo(map);
+
+      marker
+        .getElement()
+        .addEventListener("click", () => {
+          onSelectAsset(asset);
+        });
     });
 
     return () => map.remove();
-  }, [assets]);
+  }, [assets, onSelectAsset]);
 
   return (
     <div
       ref={mapContainer}
       style={{
         width: "100%",
-        height: "500px",
+        height: "700px",
+        borderRadius: "12px",
       }}
     />
   );
