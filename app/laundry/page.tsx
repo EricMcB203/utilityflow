@@ -1,66 +1,50 @@
+import { supabase } from "../../lib/supabase";
+
+import CreateCart from "../components/CreateCart";
+import CartLifecycleBoard from "../components/CartLifecycleBoard";
+import ChainOfCustodyTimeline from "../components/ChainOfCustodyTimeline";
+import BatchAssignmentEngine from "../components/BatchAssignmentEngine";
+import MachineAssignmentEngine from "../components/MachineAssignmentEngine";
+import ProductionQueueEngine from "../components/ProductionQueueEngine";
+import HotelVisibilityPortal from "../components/HotelVisibilityPortal";
+import ForecastingEngine from "../components/ForecastingEngine";
 import LaundryPlantStatus from "../components/LaundryPlantStatus";
+import BatchAutomationStatus from "../components/BatchAutomationStatus";
+import DeliveryManagement from "../components/DeliveryManagement";
 
-export default function LaundryPage() {
-  const carts = [
-    {
-      id: "CART-001",
-      hotel: "Mountain View Resort",
-      weight: 245,
-      status: "Collecting",
-    },
-    {
-      id: "CART-002",
-      hotel: "Riverside Lodge",
-      weight: 190,
-      status: "Ready For Pickup",
-    },
-    {
-      id: "CART-003",
-      hotel: "Summit Suites",
-      weight: 315,
-      status: "Processing",
-    },
-  ];
+export default async function LaundryPage() {
+  const { data: carts } =
+    await supabase
+      .from("carts")
+      .select("*");
 
-  const chainEvents = [
-    {
-      time: "08:15",
-      event: "Cart CART-001 Collected",
-    },
-    {
-      time: "08:45",
-      event: "Batch B-100 Built",
-    },
-    {
-      time: "09:02",
-      event: "South Fork Plant Received Load",
-    },
-    {
-      time: "09:18",
-      event: "Wash Cycle Started",
-    },
-  ];
+  const { data: custodyEvents } =
+    await supabase
+      .from("chain_of_custody")
+      .select("*")
+      .order("event_time", {
+        ascending: false,
+      });
 
-  const batches = [
-    {
-      id: "B-100",
-      plant: "South Fork",
-      pounds: 850,
-      status: "Building",
-    },
-    {
-      id: "B-101",
-      plant: "Alamosa",
-      pounds: 1250,
-      status: "Ready",
-    },
-    {
-      id: "B-102",
-      plant: "South Fork",
-      pounds: 920,
-      status: "Processing",
-    },
-  ];
+  const { data: batches } =
+    await supabase
+      .from("batches")
+      .select("*");
+
+  const { data: machineAssignments } =
+    await supabase
+      .from("machine_assignments")
+      .select("*");
+
+  const { data: queueItems } =
+    await supabase
+      .from("production_queue")
+      .select("*");
+
+  const { data: deliveries } =
+    await supabase
+      .from("deliveries")
+      .select("*");
 
   return (
     <main
@@ -78,139 +62,92 @@ export default function LaundryPage() {
         style={{
           display: "grid",
           gridTemplateColumns:
-            "repeat(4, 1fr)",
+            "repeat(5, 1fr)",
           gap: "20px",
           marginBottom: "30px",
         }}
       >
         <DashboardCard
-          title="Carts Active"
-          value="12"
+          title="Carts"
+          value={String(
+            carts?.length ?? 0
+          )}
           color="#2563eb"
         />
 
         <DashboardCard
-          title="Open Batches"
-          value="8"
+          title="Batches"
+          value={String(
+            batches?.length ?? 0
+          )}
           color="#f59e0b"
         />
 
         <DashboardCard
-          title="Pounds Today"
-          value="14,250"
+          title="Machines"
+          value={String(
+            machineAssignments?.length ??
+              0
+          )}
+          color="#8b5cf6"
+        />
+
+        <DashboardCard
+          title="Queue"
+          value={String(
+            queueItems?.length ?? 0
+          )}
           color="#10b981"
         />
 
         <DashboardCard
-          title="Hotels Online"
-          value="5"
-          color="#8b5cf6"
+          title="Deliveries"
+          value={String(
+            deliveries?.length ?? 0
+          )}
+          color="#ef4444"
         />
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "2fr 1fr",
-          gap: "20px",
-        }}
-      >
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: "12px",
-            padding: "20px",
-            border: "1px solid #ddd",
-          }}
-        >
-          <h2>Smart Cart Dashboard</h2>
+      <CreateCart />
 
-          <table style={{ width: "100%" }}>
-            <thead>
-              <tr>
-                <th>Cart</th>
-                <th>Hotel</th>
-                <th>Weight</th>
-                <th>Status</th>
-              </tr>
-            </thead>
+      <BatchAutomationStatus
+        carts={carts ?? []}
+      />
 
-            <tbody>
-              {carts.map((cart) => (
-                <tr key={cart.id}>
-                  <td>{cart.id}</td>
-                  <td>{cart.hotel}</td>
-                  <td>{cart.weight} lbs</td>
-                  <td>{cart.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <CartLifecycleBoard
+        carts={carts ?? []}
+      />
 
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: "12px",
-            padding: "20px",
-            border: "1px solid #ddd",
-          }}
-        >
-          <h2>Chain Of Custody</h2>
+      <ChainOfCustodyTimeline
+        events={custodyEvents ?? []}
+      />
 
-          {chainEvents.map((event, i) => (
-            <div
-              key={i}
-              style={{
-                marginBottom: "10px",
-              }}
-            >
-              <strong>
-                {event.time}
-              </strong>
+      <BatchAssignmentEngine
+        batches={batches ?? []}
+      />
 
-              <br />
+      <MachineAssignmentEngine
+        assignments={
+          machineAssignments ?? []
+        }
+      />
 
-              {event.event}
-            </div>
-          ))}
-        </div>
-      </div>
+      <ProductionQueueEngine
+        queueItems={
+          queueItems ?? []
+        }
+      />
 
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "12px",
-          padding: "20px",
-          border: "1px solid #ddd",
-          marginTop: "20px",
-        }}
-      >
-        <h2>Batch Builder</h2>
+      <DeliveryManagement
+        deliveries={
+          deliveries ?? []
+        }
+      />
 
-        <table style={{ width: "100%" }}>
-          <thead>
-            <tr>
-              <th>Batch</th>
-              <th>Plant</th>
-              <th>Pounds</th>
-              <th>Status</th>
-            </tr>
-          </thead>
+      <HotelVisibilityPortal />
 
-          <tbody>
-            {batches.map((batch) => (
-              <tr key={batch.id}>
-                <td>{batch.id}</td>
-                <td>{batch.plant}</td>
-                <td>{batch.pounds} lbs</td>
-                <td>{batch.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ForecastingEngine />
 
       <LaundryPlantStatus />
     </main>
