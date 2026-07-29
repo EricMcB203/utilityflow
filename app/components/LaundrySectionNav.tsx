@@ -1,46 +1,59 @@
+﻿"use client";
+
 export default function LaundrySectionNav() {
   const sections = [
     {
       label: "Overview",
-      href: "#overview",
+      id: "overview",
     },
     {
       label: "Carts",
-      href: "#carts",
+      id: "carts",
     },
     {
       label: "Custody",
-      href: "#custody",
+      id: "custody",
     },
     {
       label: "Production",
-      href: "#production",
+      id: "production",
     },
     {
       label: "Delivery",
-      href: "#delivery",
+      id: "delivery",
     },
     {
       label: "Routing",
-      href: "#routing",
+      id: "routing",
     },
     {
       label: "Forecasting",
-      href: "#forecasting",
+      id: "forecasting",
     },
     {
       label: "Plant Status",
-      href: "#plant-status",
+      id: "plant-status",
     },
   ];
+
+  function scrollToSection(id: string) {
+    const element = document.getElementById(id);
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }
 
   return (
     <div
       style={{
         position: "sticky",
         top: 0,
-        zIndex: 10,
-        background: "#ffffff",
+        zIndex: 100,
+        backgroundColor: "#ffffff",
         border: "1px solid #ddd",
         borderRadius: "12px",
         padding: "12px",
@@ -52,21 +65,20 @@ export default function LaundrySectionNav() {
       }}
     >
       {sections.map((section) => (
-        <a
-          key={section.href}
-          href={section.href}
+        <button
+          key={section.id}
+          onClick={() => scrollToSection(section.id)}
           style={{
-            textDecoration: "none",
-            color: "#333",
-            fontWeight: "500",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            backgroundColor: "#f5f5f5",
             border: "1px solid #ddd",
+            backgroundColor: "#f9fafb",
+            borderRadius: "8px",
+            padding: "8px 12px",
+            cursor: "pointer",
+            fontWeight: "bold",
           }}
         >
           {section.label}
-        </a>
+        </button>
       ))}
     </div>
   );

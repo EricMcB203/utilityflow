@@ -14,6 +14,8 @@ import PlantUtilizationHeatMap from "../components/PlantUtilizationHeatMap";
 import PlantBalancingEngine from "../components/PlantBalancingEngine";
 import LaundryOperationsAlerts from "../components/LaundryOperationsAlerts";
 import LaundryCommandSummary from "../components/LaundryCommandSummary";
+import LaundrySectionNav from "../components/LaundrySectionNav";
+import LaundrySectionCard from "../components/LaundrySectionCard";
 import HotelVisibilityPortal from "../components/HotelVisibilityPortal";
 import ForecastingEngine from "../components/ForecastingEngine";
 import LaundryPlantStatus from "../components/LaundryPlantStatus";
@@ -61,92 +63,215 @@ export default async function LaundryPage() {
     >
       <h1>UtilityFlow Laundry Division</h1>
 
-      <LaundryCommandSummary
-        carts={carts ?? []}
-        batches={batches ?? []}
-        machineAssignments={machineAssignments ?? []}
-        queueItems={queueItems ?? []}
-        deliveries={deliveries ?? []}
-        plants={plants ?? []}
-      />
+      <LaundrySectionNav />
 
-      <div
+      <section
+        id="overview"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
-          gap: "20px",
-          marginBottom: "30px",
+          scrollMarginTop: "90px",
         }}
       >
-        <DashboardCard
+        <LaundrySectionCard
+          title="Overview"
+          defaultOpen={true}
+        >
+          <LaundryCommandSummary
+            carts={carts ?? []}
+            batches={batches ?? []}
+            machineAssignments={machineAssignments ?? []}
+            queueItems={queueItems ?? []}
+            deliveries={deliveries ?? []}
+            plants={plants ?? []}
+          />
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "20px",
+              marginTop: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            <DashboardCard
+              title="Carts"
+              value={String(carts?.length ?? 0)}
+              color="#2563eb"
+            />
+
+            <DashboardCard
+              title="Batches"
+              value={String(batches?.length ?? 0)}
+              color="#f59e0b"
+            />
+
+            <DashboardCard
+              title="Machines"
+              value={String(machineAssignments?.length ?? 0)}
+              color="#8b5cf6"
+            />
+
+            <DashboardCard
+              title="Queue"
+              value={String(queueItems?.length ?? 0)}
+              color="#10b981"
+            />
+
+            <DashboardCard
+              title="Deliveries"
+              value={String(deliveries?.length ?? 0)}
+              color="#ef4444"
+            />
+          </div>
+
+          <LaundryOperationsAlerts
+            carts={carts ?? []}
+            plants={plants ?? []}
+            deliveries={deliveries ?? []}
+            queueItems={queueItems ?? []}
+          />
+        </LaundrySectionCard>
+      </section>
+
+      <section
+        id="carts"
+        style={{
+          scrollMarginTop: "90px",
+        }}
+      >
+        <LaundrySectionCard
           title="Carts"
-          value={String(carts?.length ?? 0)}
-          color="#2563eb"
-        />
+          defaultOpen={true}
+        >
+          <CreateCart />
 
-        <DashboardCard
-          title="Batches"
-          value={String(batches?.length ?? 0)}
-          color="#f59e0b"
-        />
+          <BatchAutomationStatus
+            carts={carts ?? []}
+          />
 
-        <DashboardCard
-          title="Machines"
-          value={String(machineAssignments?.length ?? 0)}
-          color="#8b5cf6"
-        />
+          <CartLifecycleBoard
+            carts={carts ?? []}
+          />
+        </LaundrySectionCard>
+      </section>
 
-        <DashboardCard
-          title="Queue"
-          value={String(queueItems?.length ?? 0)}
-          color="#10b981"
-        />
+      <section
+        id="custody"
+        style={{
+          scrollMarginTop: "90px",
+        }}
+      >
+        <LaundrySectionCard
+          title="Chain Of Custody"
+          defaultOpen={true}
+        >
+          <ChainOfCustodyTimeline
+            events={custodyEvents ?? []}
+          />
+        </LaundrySectionCard>
+      </section>
 
-        <DashboardCard
-          title="Deliveries"
-          value={String(deliveries?.length ?? 0)}
-          color="#ef4444"
-        />
-      </div>
+      <section
+        id="production"
+        style={{
+          scrollMarginTop: "90px",
+        }}
+      >
+        <LaundrySectionCard
+          title="Production"
+          defaultOpen={true}
+        >
+          <BatchAssignmentEngine
+            batches={batches ?? []}
+          />
 
-      <LaundryOperationsAlerts
-        carts={carts ?? []}
-        plants={plants ?? []}
-        deliveries={deliveries ?? []}
-        queueItems={queueItems ?? []}
-      />
+          <MachineAssignmentEngine
+            assignments={machineAssignments ?? []}
+          />
 
-      <CreateCart />
+          <ProductionQueueEngine
+            queueItems={queueItems ?? []}
+          />
+        </LaundrySectionCard>
+      </section>
 
-      <BatchAutomationStatus carts={carts ?? []} />
+      <section
+        id="delivery"
+        style={{
+          scrollMarginTop: "90px",
+        }}
+      >
+        <LaundrySectionCard
+          title="Delivery"
+          defaultOpen={true}
+        >
+          <DeliveryManagement
+            deliveries={deliveries ?? []}
+          />
 
-      <CartLifecycleBoard carts={carts ?? []} />
+          <DriverDispatchDashboard
+            deliveries={deliveries ?? []}
+          />
 
-      <ChainOfCustodyTimeline events={custodyEvents ?? []} />
+          <RouteOptimizationDashboard
+            deliveries={deliveries ?? []}
+          />
+        </LaundrySectionCard>
+      </section>
 
-      <BatchAssignmentEngine batches={batches ?? []} />
+      <section
+        id="routing"
+        style={{
+          scrollMarginTop: "90px",
+        }}
+      >
+        <LaundrySectionCard
+          title="Routing"
+          defaultOpen={true}
+        >
+          <PlantRoutingDashboard
+            plants={plants ?? []}
+          />
 
-      <MachineAssignmentEngine assignments={machineAssignments ?? []} />
+          <PlantUtilizationHeatMap
+            plants={plants ?? []}
+          />
 
-      <ProductionQueueEngine queueItems={queueItems ?? []} />
+          <PlantBalancingEngine
+            plants={plants ?? []}
+          />
+        </LaundrySectionCard>
+      </section>
 
-      <DeliveryManagement deliveries={deliveries ?? []} />
+      <section
+        id="forecasting"
+        style={{
+          scrollMarginTop: "90px",
+        }}
+      >
+        <LaundrySectionCard
+          title="Forecasting And Hotel Visibility"
+          defaultOpen={true}
+        >
+          <HotelVisibilityPortal />
 
-      <DriverDispatchDashboard deliveries={deliveries ?? []} />
+          <ForecastingEngine />
+        </LaundrySectionCard>
+      </section>
 
-      <RouteOptimizationDashboard deliveries={deliveries ?? []} />
-
-      <PlantRoutingDashboard plants={plants ?? []} />
-
-      <PlantUtilizationHeatMap plants={plants ?? []} />
-
-      <PlantBalancingEngine plants={plants ?? []} />
-
-      <HotelVisibilityPortal />
-
-      <ForecastingEngine />
-
-      <LaundryPlantStatus />
+      <section
+        id="plant-status"
+        style={{
+          scrollMarginTop: "90px",
+        }}
+      >
+        <LaundrySectionCard
+          title="Plant Status"
+          defaultOpen={true}
+        >
+          <LaundryPlantStatus />
+        </LaundrySectionCard>
+      </section>
     </main>
   );
 }
