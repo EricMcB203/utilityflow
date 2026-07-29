@@ -7,23 +7,40 @@ type ProductionQueueEngineProps = {
 export default function ProductionQueueEngine({
   queueItems,
 }: ProductionQueueEngineProps) {
+  function getNextStage(
+    currentStage: string
+  ) {
+    if (currentStage === "Wash Queue") {
+      return "Dry Queue";
+    }
+
+    if (currentStage === "Dry Queue") {
+      return "Fold Queue";
+    }
+
+    if (currentStage === "Fold Queue") {
+      return "Ready For Delivery";
+    }
+
+    return currentStage;
+  }
+
   async function advanceStage(
     id: string,
     currentStage: string
   ) {
-    let nextStage = currentStage;
+    const nextStage =
+      getNextStage(currentStage);
 
-    if (currentStage === "Wash Queue") {
-      nextStage = "Dry Queue";
-    } else if (
-      currentStage === "Dry Queue"
+    if (
+      currentStage ===
+      "Ready For Delivery"
     ) {
-      nextStage = "Fold Queue";
-    } else if (
-      currentStage === "Fold Queue"
-    ) {
-      nextStage =
-        "Ready For Delivery";
+      alert(
+        "This batch is already ready for delivery."
+      );
+
+      return;
     }
 
     try {
@@ -45,21 +62,29 @@ export default function ProductionQueueEngine({
       const result =
         await response.json();
 
-      console.log(result);
-
       if (!response.ok) {
         alert(
           `Update Failed: ${
-            result.error?.message ||
+            result.error ||
             "Unknown Error"
           }`
         );
+
         return;
       }
 
-      alert(
-        `Stage Updated To ${nextStage}`
-      );
+      if (
+        nextStage ===
+        "Ready For Delivery"
+      ) {
+        alert(
+          "Batch is ready for delivery. Delivery record created."
+        );
+      } else {
+        alert(
+          `Stage Updated To ${nextStage}`
+        );
+      }
 
       window.location.reload();
     } catch (error) {
@@ -117,8 +142,15 @@ export default function ProductionQueueEngine({
                       item.queue_stage
                     )
                   }
+                  disabled={
+                    item.queue_stage ===
+                    "Ready For Delivery"
+                  }
                 >
-                  Advance
+                  {item.queue_stage ===
+                  "Ready For Delivery"
+                    ? "Ready"
+                    : "Advance"}
                 </button>
               </td>
             </tr>
