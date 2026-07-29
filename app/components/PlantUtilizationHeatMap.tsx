@@ -8,15 +8,37 @@ export default function PlantUtilizationHeatMap({
   function getColor(
     utilization: number
   ) {
-    if (utilization >= 80) {
+    if (utilization >= 100) {
+      return "#7f1d1d";
+    }
+
+    if (utilization >= 95) {
       return "#ef4444";
     }
 
-    if (utilization >= 50) {
+    if (utilization >= 80) {
       return "#f59e0b";
     }
 
     return "#10b981";
+  }
+
+  function getStatus(
+    utilization: number
+  ) {
+    if (utilization >= 100) {
+      return "STOP ROUTING";
+    }
+
+    if (utilization >= 95) {
+      return "CRITICAL";
+    }
+
+    if (utilization >= 80) {
+      return "WARNING";
+    }
+
+    return "NORMAL";
   }
 
   return (
@@ -61,14 +83,17 @@ export default function PlantUtilizationHeatMap({
               </span>
 
               <span>
-                {utilization}%
+                {utilization}% -{" "}
+                {getStatus(
+                  utilization
+                )}
               </span>
             </div>
 
             <div
               style={{
                 width: "100%",
-                height: "16px",
+                height: "18px",
                 background:
                   "#e5e7eb",
                 borderRadius: "8px",

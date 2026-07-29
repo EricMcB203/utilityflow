@@ -5,51 +5,62 @@ type PlantRoutingDashboardProps = {
 export default function PlantRoutingDashboard({
   plants,
 }: PlantRoutingDashboardProps) {
+  function getUtilization(
+    plant: any
+  ) {
+    return Math.round(
+      (plant.current_load /
+        plant.max_capacity) *
+        100
+    );
+  }
+
   function getStatus(
     utilization: number
   ) {
     if (utilization >= 100) {
-      return "Stop Routing";
+      return "STOP ROUTING";
     }
 
     if (utilization >= 95) {
-      return "Critical";
+      return "CRITICAL";
     }
 
     if (utilization >= 80) {
-      return "Warning";
+      return "WARNING";
     }
 
-    return "Normal";
+    return "NORMAL";
   }
 
+  const availablePlants =
+    plants.filter((plant) => {
+      const utilization =
+        plant.current_load /
+        plant.max_capacity;
+
+      return utilization < 0.95;
+    });
+
   const recommendedPlant =
-    plants
-      .filter((plant) => {
-        const utilization =
-          (plant.current_load /
-            plant.max_capacity) *
-          100;
+    availablePlants.length > 0
+      ? availablePlants.reduce(
+          (lowest, current) => {
+            const currentPct =
+              current.current_load /
+              current.max_capacity;
 
-        return utilization < 100;
-      })
-      .reduce(
-        (lowest, current) => {
-          const currentPct =
-            current.current_load /
-            current.max_capacity;
+            const lowestPct =
+              lowest.current_load /
+              lowest.max_capacity;
 
-          const lowestPct =
-            lowest.current_load /
-            lowest.max_capacity;
-
-          return currentPct <
-            lowestPct
-            ? current
-            : lowest;
-        },
-        plants[0]
-      );
+            return currentPct <
+              lowestPct
+              ? current
+              : lowest;
+          }
+        )
+      : null;
 
   return (
     <div
@@ -67,7 +78,10 @@ export default function PlantRoutingDashboard({
 
       <div
         style={{
-          background: "#dcfce7",
+          background:
+            recommendedPlant
+              ? "#dcfce7"
+              : "#fee2e2",
           padding: "12px",
           borderRadius: "8px",
           marginBottom: "20px",
@@ -76,7 +90,9 @@ export default function PlantRoutingDashboard({
         <strong>
           Recommended Plant:
         </strong>{" "}
-        {recommendedPlant?.plant_name}
+        {recommendedPlant
+          ? recommendedPlant.plant_name
+          : "No available plant below critical capacity"}
       </div>
 
       <table
@@ -89,6 +105,7 @@ export default function PlantRoutingDashboard({
             <th>Plant</th>
             <th>Load</th>
             <th>Capacity</th>
+            <th>Utilization</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -96,11 +113,7 @@ export default function PlantRoutingDashboard({
         <tbody>
           {plants.map((plant) => {
             const utilization =
-              Math.round(
-                (plant.current_load /
-                  plant.max_capacity) *
-                  100
-              );
+              getUtilization(plant);
 
             return (
               <tr key={plant.id}>
@@ -120,6 +133,10 @@ export default function PlantRoutingDashboard({
                   {
                     plant.max_capacity
                   }
+                </td>
+
+                <td>
+                  {utilization}%
                 </td>
 
                 <td>

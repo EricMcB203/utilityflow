@@ -11,6 +11,7 @@ import DriverDispatchDashboard from "../components/DriverDispatchDashboard";
 import RouteOptimizationDashboard from "../components/RouteOptimizationDashboard";
 import PlantRoutingDashboard from "../components/PlantRoutingDashboard";
 import PlantUtilizationHeatMap from "../components/PlantUtilizationHeatMap";
+import PlantBalancingEngine from "../components/PlantBalancingEngine";
 import HotelVisibilityPortal from "../components/HotelVisibilityPortal";
 import ForecastingEngine from "../components/ForecastingEngine";
 import LaundryPlantStatus from "../components/LaundryPlantStatus";
@@ -67,6 +68,57 @@ export default async function LaundryPage() {
         UtilityFlow Laundry Division
       </h1>
 
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(5, 1fr)",
+          gap: "20px",
+          marginBottom: "30px",
+        }}
+      >
+        <DashboardCard
+          title="Carts"
+          value={String(
+            carts?.length ?? 0
+          )}
+          color="#2563eb"
+        />
+
+        <DashboardCard
+          title="Batches"
+          value={String(
+            batches?.length ?? 0
+          )}
+          color="#f59e0b"
+        />
+
+        <DashboardCard
+          title="Machines"
+          value={String(
+            machineAssignments?.length ??
+              0
+          )}
+          color="#8b5cf6"
+        />
+
+        <DashboardCard
+          title="Queue"
+          value={String(
+            queueItems?.length ?? 0
+          )}
+          color="#10b981"
+        />
+
+        <DashboardCard
+          title="Deliveries"
+          value={String(
+            deliveries?.length ?? 0
+          )}
+          color="#ef4444"
+        />
+      </div>
+
       <CreateCart />
 
       <BatchAutomationStatus
@@ -78,7 +130,9 @@ export default async function LaundryPage() {
       />
 
       <ChainOfCustodyTimeline
-        events={custodyEvents ?? []}
+        events={
+          custodyEvents ?? []
+        }
       />
 
       <BatchAssignmentEngine
@@ -123,11 +177,58 @@ export default async function LaundryPage() {
         plants={plants ?? []}
       />
 
+      <PlantBalancingEngine
+        plants={plants ?? []}
+      />
+
       <HotelVisibilityPortal />
 
       <ForecastingEngine />
 
       <LaundryPlantStatus />
     </main>
+  );
+}
+
+function DashboardCard({
+  title,
+  value,
+  color,
+}: {
+  title: string;
+  value: string;
+  color: string;
+}) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderLeft: `8px solid ${color}`,
+        borderRadius: "12px",
+        padding: "20px",
+        boxShadow:
+          "0 2px 6px rgba(0,0,0,0.1)",
+      }}
+    >
+      <div
+        style={{
+          fontSize: "14px",
+          color: "#666",
+          marginBottom: "8px",
+        }}
+      >
+        {title}
+      </div>
+
+      <div
+        style={{
+          fontSize: "30px",
+          fontWeight: "bold",
+          color,
+        }}
+      >
+        {value}
+      </div>
+    </div>
   );
 }
