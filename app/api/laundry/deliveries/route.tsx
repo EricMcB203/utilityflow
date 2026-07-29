@@ -23,6 +23,14 @@ export async function PATCH(
     );
   }
 
+  await supabase
+    .from("chain_of_custody")
+    .insert([
+      {
+        event_text: `Delivery status changed to ${body.delivery_status}`,
+      },
+    ]);
+
   return NextResponse.json({
     success: true,
   });

@@ -7,6 +7,36 @@ export async function POST(
   const body =
     await request.json();
 
+  const { data: plants } =
+    await supabase
+      .from("plant_capacity")
+      .select("*");
+
+  let selectedPlant = null;
+
+  if (
+    plants &&
+    plants.length > 0
+  ) {
+    selectedPlant =
+      plants.reduce(
+        (lowest, current) => {
+          const currentPct =
+            current.current_load /
+            current.max_capacity;
+
+          const lowestPct =
+            lowest.current_load /
+            lowest.max_capacity;
+
+          return currentPct <
+            lowestPct
+              ? current
+              : lowest;
+        }
+      );
+  }
+
   const {
     data: existingBatch,
   } = await supabase
@@ -29,7 +59,8 @@ export async function POST(
           status:
             body.status || "Idle",
           batch_id:
-            existingBatch?.id ?? null,
+            existingBatch?.id ??
+            null,
         },
       ]);
 
@@ -40,32 +71,17 @@ export async function POST(
     );
   }
 
-  if (existingBatch) {
+  if (selectedPlant) {
     await supabase
-      .from("machine_assignments")
-      .insert([
-        {
-          batch_id:
-            existingBatch.id,
-          washer_name:
-            "Washer-01",
-          dryer_name:
-            "Dryer-01",
-          status: "Queued",
-        },
-      ]);
-
-    await supabase
-      .from("production_queue")
-      .insert([
-        {
-          batch_id:
-            existingBatch.id,
-          queue_stage:
-            "Wash Queue",
-          status: "Queued",
-        },
-      ]);
+      .from("plant_capacity")
+      .update({
+        current_load:
+          selectedPlant.current_load + 5,
+      })
+      .eq(
+        "id",
+        selectedPlant.id
+      );
   }
 
   await supabase
@@ -75,13 +91,13 @@ export async function POST(
         event_text: `${body.cart_number} created for ${body.hotel_name}`,
       },
       {
+        event_text: `${body.cart_number} automatically routed to ${selectedPlant?.plant_name}`,
+      },
+      {
         event_text: `${body.cart_number} assigned to batch ${existingBatch?.batch_number}`,
       },
       {
-        event_text: `${body.cart_number} assigned machine resources`,
-      },
-      {
-        event_text: `${body.cart_number} added to production queue`,
+        event_text: `${selectedPlant?.plant_name} load increased`,
       },
     ]);
 
