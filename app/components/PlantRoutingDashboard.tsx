@@ -1,3 +1,5 @@
+import StatusBadge from "./StatusBadge";
+
 type PlantRoutingDashboardProps = {
   plants: any[];
 };
@@ -66,10 +68,9 @@ export default function PlantRoutingDashboard({
     <div
       style={{
         background: "#fff",
-        borderRadius: "12px",
-        padding: "20px",
-        border: "1px solid #ddd",
-        marginTop: "20px",
+        borderRadius: "16px",
+        padding: "24px",
+        border: "1px solid #e5e7eb",
       }}
     >
       <h2>
@@ -82,9 +83,9 @@ export default function PlantRoutingDashboard({
             recommendedPlant
               ? "#dcfce7"
               : "#fee2e2",
-          padding: "12px",
-          borderRadius: "8px",
-          marginBottom: "20px",
+          padding: "16px",
+          borderRadius: "12px",
+          marginBottom: "24px",
         }}
       >
         <strong>
@@ -118,21 +119,15 @@ export default function PlantRoutingDashboard({
             return (
               <tr key={plant.id}>
                 <td>
-                  {
-                    plant.plant_name
-                  }
+                  {plant.plant_name}
                 </td>
 
                 <td>
-                  {
-                    plant.current_load
-                  }
+                  {plant.current_load}
                 </td>
 
                 <td>
-                  {
-                    plant.max_capacity
-                  }
+                  {plant.max_capacity}
                 </td>
 
                 <td>
@@ -140,9 +135,11 @@ export default function PlantRoutingDashboard({
                 </td>
 
                 <td>
-                  {getStatus(
-                    utilization
-                  )}
+                  <StatusBadge
+                    status={getStatus(
+                      utilization
+                    )}
+                  />
                 </td>
               </tr>
             );

@@ -54,90 +54,90 @@ export default function LaundryOperationsAlerts({
   return (
     <div
       style={{
-        background: "#fff",
-        borderRadius: "12px",
-        padding: "20px",
-        border: "1px solid #ddd",
-        marginTop: "20px",
-        marginBottom: "20px",
+        background: "#ffffff",
+        borderRadius: "18px",
+        padding: "24px",
+        border: "1px solid #e5e7eb",
       }}
     >
-      <h2>Laundry Operations Alerts</h2>
+      <h2>
+        Laundry Operations Alerts
+      </h2>
 
       <div
         style={{
           display: "grid",
           gridTemplateColumns:
             "repeat(4, 1fr)",
-          gap: "15px",
+          gap: "16px",
         }}
       >
         <AlertCard
+          icon="🔴"
           title="Critical Plants"
           value={criticalPlants.length}
-          color={
-            criticalPlants.length > 0
-              ? "#ef4444"
-              : "#10b981"
-          }
+          color="#ef4444"
         />
 
         <AlertCard
+          icon="⚫"
           title="Stop Routing"
           value={stoppedPlants.length}
-          color={
-            stoppedPlants.length > 0
-              ? "#7f1d1d"
-              : "#10b981"
-          }
+          color="#111827"
         />
 
         <AlertCard
+          icon="📦"
           title="Active Carts"
           value={activeCarts.length}
           color="#2563eb"
         />
 
         <AlertCard
+          icon="🚚"
           title="Ready Deliveries"
           value={readyDeliveries.length}
-          color="#f59e0b"
+          color="#8b5cf6"
         />
       </div>
 
       <div
         style={{
-          marginTop: "20px",
-          padding: "15px",
-          background: "#f9fafb",
-          borderRadius: "8px",
+          marginTop: "24px",
+          borderRadius: "12px",
+          background: "#f8fafc",
+          padding: "16px",
         }}
       >
-        <strong>
-          Production Queue Active:
-        </strong>{" "}
-        {activeQueueItems.length}
+        <p>
+          <strong>
+            Active Production Queue:
+          </strong>{" "}
+          {activeQueueItems.length}
+        </p>
 
-        <br />
-
-        <strong>
-          Routing Status:
-        </strong>{" "}
-        {stoppedPlants.length > 0
-          ? "One or more plants are blocked from routing."
-          : criticalPlants.length > 0
-          ? "One or more plants are near capacity."
-          : "Routing network is currently healthy."}
+        <p>
+          <strong>
+            Routing Status:
+          </strong>{" "}
+          {stoppedPlants.length > 0
+            ? "One or more plants are blocked from routing."
+            : criticalPlants.length > 0
+            ? "One or more plants are approaching capacity."
+            : "Routing network operating normally."}
+        </p>
       </div>
     </div>
   );
 }
 
 function AlertCard({
+  icon,
   title,
   value,
   color,
 }: {
+  icon: string;
   title: string;
   value: number;
   color: string;
@@ -145,18 +145,30 @@ function AlertCard({
   return (
     <div
       style={{
-        borderLeft:
-          `8px solid ${color}`,
-        background: "#f9f9f9",
-        padding: "15px",
-        borderRadius: "8px",
+        background: "#ffffff",
+        borderRadius: "16px",
+        padding: "20px",
+        boxShadow:
+          "0 4px 12px rgba(0,0,0,0.06)",
+        borderTop:
+          `5px solid ${color}`,
       }}
     >
       <div
         style={{
+          fontSize: "30px",
+          marginBottom: "12px",
+        }}
+      >
+        {icon}
+      </div>
+
+      <div
+        style={{
+          color: "#6b7280",
           fontSize: "14px",
-          color: "#666",
-          marginBottom: "8px",
+          fontWeight: 600,
+          marginBottom: "10px",
         }}
       >
         {title}
@@ -164,9 +176,9 @@ function AlertCard({
 
       <div
         style={{
-          fontSize: "28px",
-          fontWeight: "bold",
           color,
+          fontSize: "36px",
+          fontWeight: 800,
         }}
       >
         {value}

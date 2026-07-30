@@ -1,5 +1,7 @@
 "use client";
 
+import StatusBadge from "./StatusBadge";
+
 type ProductionQueueEngineProps = {
   queueItems: any[];
 };
@@ -99,11 +101,10 @@ export default function ProductionQueueEngine({
   return (
     <div
       style={{
-        background: "#fff",
-        borderRadius: "12px",
-        padding: "20px",
-        border: "1px solid #ddd",
-        marginTop: "20px",
+        background: "#ffffff",
+        borderRadius: "16px",
+        padding: "24px",
+        border: "1px solid #e5e7eb",
       }}
     >
       <h2>
@@ -113,28 +114,77 @@ export default function ProductionQueueEngine({
       <table
         style={{
           width: "100%",
+          borderCollapse:
+            "collapse",
         }}
       >
         <thead>
           <tr>
-            <th>Stage</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th
+              style={{
+                textAlign: "left",
+                padding: "12px",
+              }}
+            >
+              Queue Stage
+            </th>
+
+            <th
+              style={{
+                textAlign: "left",
+                padding: "12px",
+              }}
+            >
+              Status
+            </th>
+
+            <th
+              style={{
+                textAlign: "left",
+                padding: "12px",
+              }}
+            >
+              Action
+            </th>
           </tr>
         </thead>
 
         <tbody>
           {queueItems.map((item) => (
-            <tr key={item.id}>
-              <td>
+            <tr
+              key={item.id}
+              style={{
+                borderTop:
+                  "1px solid #f1f5f9",
+              }}
+            >
+              <td
+                style={{
+                  padding: "12px",
+                  fontWeight: 600,
+                }}
+              >
                 {item.queue_stage}
               </td>
 
-              <td>
-                {item.status}
+              <td
+                style={{
+                  padding: "12px",
+                }}
+              >
+                <StatusBadge
+                  status={
+                    item.status ??
+                    "QUEUED"
+                  }
+                />
               </td>
 
-              <td>
+              <td
+                style={{
+                  padding: "12px",
+                }}
+              >
                 <button
                   onClick={() =>
                     advanceStage(
@@ -146,6 +196,26 @@ export default function ProductionQueueEngine({
                     item.queue_stage ===
                     "Ready For Delivery"
                   }
+                  style={{
+                    background:
+                      item.queue_stage ===
+                      "Ready For Delivery"
+                        ? "#9ca3af"
+                        : "#2563eb",
+                    color:
+                      "#ffffff",
+                    border: "none",
+                    borderRadius:
+                      "8px",
+                    padding:
+                      "8px 14px",
+                    cursor:
+                      item.queue_stage ===
+                      "Ready For Delivery"
+                        ? "not-allowed"
+                        : "pointer",
+                    fontWeight: 600,
+                  }}
                 >
                   {item.queue_stage ===
                   "Ready For Delivery"

@@ -1,5 +1,7 @@
 "use client";
 
+import StatusBadge from "./StatusBadge";
+
 type DeliveryManagementProps = {
   deliveries: any[];
 };
@@ -58,11 +60,10 @@ export default function DeliveryManagement({
   return (
     <div
       style={{
-        background: "#fff",
-        borderRadius: "12px",
-        padding: "20px",
-        border: "1px solid #ddd",
-        marginTop: "20px",
+        background: "#ffffff",
+        borderRadius: "16px",
+        padding: "24px",
+        border: "1px solid #e5e7eb",
       }}
     >
       <h2>
@@ -72,13 +73,38 @@ export default function DeliveryManagement({
       <table
         style={{
           width: "100%",
+          borderCollapse:
+            "collapse",
         }}
       >
         <thead>
           <tr>
-            <th>Driver</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th
+              style={{
+                textAlign: "left",
+                padding: "12px",
+              }}
+            >
+              Driver
+            </th>
+
+            <th
+              style={{
+                textAlign: "left",
+                padding: "12px",
+              }}
+            >
+              Status
+            </th>
+
+            <th
+              style={{
+                textAlign: "left",
+                padding: "12px",
+              }}
+            >
+              Action
+            </th>
           </tr>
         </thead>
 
@@ -87,20 +113,38 @@ export default function DeliveryManagement({
             (delivery) => (
               <tr
                 key={delivery.id}
+                style={{
+                  borderTop:
+                    "1px solid #f1f5f9",
+                }}
               >
-                <td>
+                <td
+                  style={{
+                    padding: "12px",
+                  }}
+                >
                   {
                     delivery.driver_name
                   }
                 </td>
 
-                <td>
-                  {
-                    delivery.delivery_status
-                  }
+                <td
+                  style={{
+                    padding: "12px",
+                  }}
+                >
+                  <StatusBadge
+                    status={
+                      delivery.delivery_status
+                    }
+                  />
                 </td>
 
-                <td>
+                <td
+                  style={{
+                    padding: "12px",
+                  }}
+                >
                   <button
                     onClick={() =>
                       advanceDelivery(
@@ -108,6 +152,22 @@ export default function DeliveryManagement({
                         delivery.delivery_status
                       )
                     }
+                    style={{
+                      background:
+                        "#2563eb",
+                      color:
+                        "#ffffff",
+                      border:
+                        "none",
+                      borderRadius:
+                        "8px",
+                      padding:
+                        "8px 14px",
+                      cursor:
+                        "pointer",
+                      fontWeight:
+                        600,
+                    }}
                   >
                     Advance
                   </button>

@@ -1,3 +1,5 @@
+import StatusBadge from "./StatusBadge";
+
 type PlantUtilizationHeatMapProps = {
   plants: any[];
 };
@@ -44,11 +46,10 @@ export default function PlantUtilizationHeatMap({
   return (
     <div
       style={{
-        background: "#fff",
-        borderRadius: "12px",
-        padding: "20px",
-        border: "1px solid #ddd",
-        marginTop: "20px",
+        background: "#ffffff",
+        borderRadius: "16px",
+        padding: "24px",
+        border: "1px solid #e5e7eb",
       }}
     >
       <h2>
@@ -67,7 +68,7 @@ export default function PlantUtilizationHeatMap({
           <div
             key={plant.id}
             style={{
-              marginBottom: "20px",
+              marginBottom: "24px",
             }}
           >
             <div
@@ -75,19 +76,38 @@ export default function PlantUtilizationHeatMap({
                 display: "flex",
                 justifyContent:
                   "space-between",
-                marginBottom: "5px",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <div>
+                <strong>
+                  {plant.plant_name}
+                </strong>
+              </div>
+
+              <StatusBadge
+                status={getStatus(
+                  utilization
+                )}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent:
+                  "space-between",
+                marginBottom: "8px",
               }}
             >
               <span>
-                {plant.plant_name}
+                Utilization
               </span>
 
-              <span>
-                {utilization}% -{" "}
-                {getStatus(
-                  utilization
-                )}
-              </span>
+              <strong>
+                {utilization}%
+              </strong>
             </div>
 
             <div
@@ -96,7 +116,7 @@ export default function PlantUtilizationHeatMap({
                 height: "18px",
                 background:
                   "#e5e7eb",
-                borderRadius: "8px",
+                borderRadius: "999px",
                 overflow: "hidden",
               }}
             >
@@ -109,6 +129,8 @@ export default function PlantUtilizationHeatMap({
                     getColor(
                       utilization
                     ),
+                  transition:
+                    "width 0.3s ease",
                 }}
               />
             </div>
