@@ -36,13 +36,15 @@ export default function LaundrySectionNav() {
     },
   ];
 
-  function scrollToSection(id: string) {
-    const element = document.getElementById(id);
+  function scrollToSection(
+    id: string
+  ) {
+    const element =
+      document.getElementById(id);
 
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
-        block: "start",
       });
     }
   }
@@ -54,27 +56,32 @@ export default function LaundrySectionNav() {
         top: 0,
         zIndex: 100,
         backgroundColor: "#ffffff",
-        border: "1px solid #ddd",
-        borderRadius: "12px",
-        padding: "12px",
-        marginBottom: "20px",
+        borderRadius: "16px",
+        padding: "16px",
+        marginBottom: "24px",
         display: "flex",
-        gap: "10px",
+        gap: "12px",
         flexWrap: "wrap",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+        boxShadow:
+          "0 4px 12px rgba(0,0,0,0.08)",
       }}
     >
       {sections.map((section) => (
         <button
           key={section.id}
-          onClick={() => scrollToSection(section.id)}
+          onClick={() =>
+            scrollToSection(section.id)
+          }
           style={{
-            border: "1px solid #ddd",
-            backgroundColor: "#f9fafb",
-            borderRadius: "8px",
-            padding: "8px 12px",
+            border: "none",
+            background:
+              "#2563eb",
+            color: "#ffffff",
+            borderRadius: "999px",
+            padding:
+              "10px 16px",
             cursor: "pointer",
-            fontWeight: "bold",
+            fontWeight: 600,
           }}
         >
           {section.label}

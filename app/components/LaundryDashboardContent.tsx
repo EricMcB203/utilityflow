@@ -46,9 +46,7 @@ export default function LaundryDashboardContent({
         minHeight: "100vh",
       }}
     >
-      <h1>
-        UtilityFlow Laundry Division
-      </h1>
+      <h1>UtilityFlow Laundry Division</h1>
 
       <LaundrySectionNav />
 
@@ -287,23 +285,44 @@ function DashboardCard({
   value: string;
   color: string;
 }) {
+  const icons: Record<
+    string,
+    string
+  > = {
+    Carts: "📦",
+    Batches: "🧺",
+    Machines: "⚙️",
+    Queue: "📋",
+    Deliveries: "🚚",
+  };
+
   return (
     <div
       style={{
-        background: "#fff",
-        borderLeft:
-          `8px solid ${color}`,
-        borderRadius: "12px",
-        padding: "20px",
+        background: "#ffffff",
+        borderRadius: "18px",
+        padding: "24px",
         boxShadow:
-          "0 2px 6px rgba(0,0,0,0.1)",
+          "0 8px 20px rgba(0,0,0,0.08)",
+        borderTop:
+          `5px solid ${color}`,
       }}
     >
       <div
         style={{
-          fontSize: "14px",
-          color: "#666",
+          fontSize: "30px",
           marginBottom: "8px",
+        }}
+      >
+        {icons[title] ?? "📊"}
+      </div>
+
+      <div
+        style={{
+          color: "#6b7280",
+          fontSize: "14px",
+          fontWeight: 600,
+          marginBottom: "10px",
         }}
       >
         {title}
@@ -311,9 +330,10 @@ function DashboardCard({
 
       <div
         style={{
-          fontSize: "30px",
-          fontWeight: "bold",
+          fontSize: "42px",
+          fontWeight: 800,
           color,
+          lineHeight: 1,
         }}
       >
         {value}

@@ -15,22 +15,26 @@ export default function LaundrySectionCard({
     <details
       open={defaultOpen}
       style={{
-        background: "#fff",
-        borderRadius: "12px",
-        border: "1px solid #ddd",
-        marginTop: "20px",
-        padding: "0",
+        background: "#ffffff",
+        borderRadius: "16px",
+        border: "1px solid #e5e7eb",
+        marginTop: "24px",
         overflow: "hidden",
+        boxShadow:
+          "0 4px 12px rgba(0,0,0,0.06)",
       }}
     >
       <summary
         style={{
           cursor: "pointer",
-          padding: "16px 20px",
-          fontWeight: "bold",
-          fontSize: "18px",
-          background: "#f9fafb",
-          borderBottom: "1px solid #ddd",
+          padding: "18px 24px",
+          fontWeight: 700,
+          fontSize: "20px",
+          background:
+            "linear-gradient(to right, #f8fafc, #eef2ff)",
+          borderBottom:
+            "1px solid #e5e7eb",
+          listStyle: "none",
         }}
       >
         {title}
@@ -38,7 +42,7 @@ export default function LaundrySectionCard({
 
       <div
         style={{
-          padding: "20px",
+          padding: "24px",
         }}
       >
         {children}
