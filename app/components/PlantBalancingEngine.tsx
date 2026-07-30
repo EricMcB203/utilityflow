@@ -1,3 +1,5 @@
+import StatusBadge from "./StatusBadge";
+
 type PlantBalancingEngineProps = {
   plants: any[];
 };
@@ -65,7 +67,7 @@ export default function PlantBalancingEngine({
   function getNetworkStatus() {
     if (networkUtilization >= 95) {
       return {
-        label: "Critical",
+        label: "CRITICAL",
         color: "#ef4444",
         message:
           "Network is near total capacity. Additional routing should be restricted.",
@@ -74,7 +76,7 @@ export default function PlantBalancingEngine({
 
     if (networkUtilization >= 80) {
       return {
-        label: "Warning",
+        label: "WARNING",
         color: "#f59e0b",
         message:
           "Network is under heavy load. Route new work carefully.",
@@ -82,94 +84,160 @@ export default function PlantBalancingEngine({
     }
 
     return {
-      label: "Balanced",
+      label: "NORMAL",
       color: "#10b981",
       message:
         "Network has available processing capacity.",
     };
   }
 
-  const status = getNetworkStatus();
+  const status =
+    getNetworkStatus();
 
   return (
     <div
       style={{
-        background: "#fff",
-        borderRadius: "12px",
-        padding: "20px",
-        border: "1px solid #ddd",
-        marginTop: "20px",
+        background: "#ffffff",
+        borderRadius: "18px",
+        padding: "24px",
+        border: "1px solid #e5e7eb",
       }}
     >
-      <h2>Plant Balancing Engine</h2>
+      <h2>
+        Plant Balancing Engine
+      </h2>
 
       <div
         style={{
-          background: "#f9fafb",
-          borderRadius: "10px",
-          padding: "15px",
-          marginBottom: "20px",
-          borderLeft: `8px solid ${status.color}`,
+          background: "#f8fafc",
+          borderRadius: "14px",
+          padding: "20px",
+          marginBottom: "24px",
+          borderLeft:
+            `6px solid ${status.color}`,
         }}
       >
-        <h3
+        <div
           style={{
-            color: status.color,
-            marginTop: 0,
+            marginBottom: "12px",
           }}
         >
-          Network Status: {status.label}
-        </h3>
-
-        <p>{status.message}</p>
+          <StatusBadge
+            status={
+              status.label
+            }
+          />
+        </div>
 
         <p>
-          <strong>
-            Network Utilization:
-          </strong>{" "}
-          {networkUtilization}%
+          {status.message}
         </p>
+
+        <div
+          style={{
+            fontSize: "42px",
+            fontWeight: 800,
+            color: "#2563eb",
+            marginTop: "10px",
+          }}
+        >
+          {networkUtilization}%
+        </div>
+
+        <div
+          style={{
+            color: "#6b7280",
+            fontWeight: 600,
+          }}
+        >
+          Network Utilization
+        </div>
       </div>
 
       <div
         style={{
           display: "grid",
           gridTemplateColumns:
-            "repeat(2, 1fr)",
-          gap: "20px",
+            "repeat(3, 1fr)",
+          gap: "16px",
         }}
       >
-        <div
-          style={{
-            background: "#f5f5f5",
-            padding: "15px",
-            borderRadius: "8px",
-          }}
-        >
-          <h3>Most Loaded Plant</h3>
+        <MetricCard
+          icon="🏭"
+          title="Most Loaded Plant"
+          value={
+            mostLoadedPlant
+              ?.plant_name ??
+            "N/A"
+          }
+        />
 
-          <p>
-            {mostLoadedPlant
-              ? mostLoadedPlant.plant_name
-              : "No plant data"}
-          </p>
-        </div>
+        <MetricCard
+          icon="✅"
+          title="Best Routing Target"
+          value={
+            leastLoadedPlant
+              ?.plant_name ??
+            "N/A"
+          }
+        />
 
-        <div
-          style={{
-            background: "#f5f5f5",
-            padding: "15px",
-            borderRadius: "8px",
-          }}
-        >
-          <h3>Best Routing Target</h3>
+        <MetricCard
+          icon="📊"
+          title="Network Capacity"
+          value={`${totalCapacity}`}
+        />
+      </div>
+    </div>
+  );
+}
 
-          <p>
-            {leastLoadedPlant
-              ? leastLoadedPlant.plant_name
-              : "No plant data"}
-          </p>
-        </div>
+function MetricCard({
+  icon,
+  title,
+  value,
+}: {
+  icon: string;
+  title: string;
+  value: string;
+}) {
+  return (
+    <div
+      style={{
+        background: "#ffffff",
+        borderRadius: "16px",
+        padding: "18px",
+        boxShadow:
+          "0 4px 12px rgba(0,0,0,0.06)",
+        border: "1px solid #e5e7eb",
+      }}
+    >
+      <div
+        style={{
+          fontSize: "28px",
+          marginBottom: "10px",
+        }}
+      >
+        {icon}
+      </div>
+
+      <div
+        style={{
+          color: "#6b7280",
+          fontSize: "13px",
+          marginBottom: "6px",
+        }}
+      >
+        {title}
+      </div>
+
+      <div
+        style={{
+          fontSize: "24px",
+          fontWeight: 700,
+        }}
+      >
+        {value}
       </div>
     </div>
   );

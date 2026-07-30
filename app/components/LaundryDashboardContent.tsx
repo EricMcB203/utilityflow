@@ -10,6 +10,7 @@ import RouteOptimizationDashboard from "./RouteOptimizationDashboard";
 import PlantRoutingDashboard from "./PlantRoutingDashboard";
 import PlantUtilizationHeatMap from "./PlantUtilizationHeatMap";
 import PlantBalancingEngine from "./PlantBalancingEngine";
+import PlantHealthScore from "./PlantHealthScore";
 import LaundryOperationsAlerts from "./LaundryOperationsAlerts";
 import LaundryCommandSummary from "./LaundryCommandSummary";
 import LaundrySectionNav from "./LaundrySectionNav";
@@ -18,6 +19,9 @@ import HotelVisibilityPortal from "./HotelVisibilityPortal";
 import ForecastingEngine from "./ForecastingEngine";
 import LaundryPlantStatus from "./LaundryPlantStatus";
 import BatchAutomationStatus from "./BatchAutomationStatus";
+import SystemHealthBanner from "./SystemHealthBanner";
+import PerformanceDashboard from "./PerformanceDashboard";
+import OperationsHeader from "./OperationsHeader";
 
 type LaundryDashboardContentProps = {
   carts: any[];
@@ -46,7 +50,19 @@ export default function LaundryDashboardContent({
         minHeight: "100vh",
       }}
     >
-      <h1>UtilityFlow Laundry Division</h1>
+      <OperationsHeader />
+
+      <SystemHealthBanner
+        plants={plants}
+        deliveries={deliveries}
+      />
+
+      <PerformanceDashboard
+        carts={carts}
+        deliveries={deliveries}
+        plants={plants}
+        queueItems={queueItems}
+      />
 
       <LaundrySectionNav />
 
@@ -83,17 +99,13 @@ export default function LaundryDashboardContent({
           >
             <DashboardCard
               title="Carts"
-              value={String(
-                carts.length
-              )}
+              value={String(carts.length)}
               color="#2563eb"
             />
 
             <DashboardCard
               title="Batches"
-              value={String(
-                batches.length
-              )}
+              value={String(batches.length)}
               color="#f59e0b"
             />
 
@@ -229,6 +241,10 @@ export default function LaundryDashboardContent({
           title="Routing"
           defaultOpen={true}
         >
+          <PlantHealthScore
+            plants={plants}
+          />
+
           <PlantRoutingDashboard
             plants={plants}
           />
