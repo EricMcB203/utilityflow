@@ -71,7 +71,32 @@ export default function AIPage() {
     }
   }
 
-  function askUtilityFlow() {
+  async function saveConversation(
+    question: string,
+    answer: string,
+    sourceCount: number
+  ) {
+    const { error } = await supabase
+      .from("ai_conversations")
+      .insert([
+        {
+          company_id:
+            "c0908917-6bb9-4dfe-b702-e8b180060900",
+          question,
+          answer,
+          source_count: sourceCount,
+        },
+      ]);
+
+    if (error) {
+      console.error(
+        "Error saving conversation:",
+        error
+      );
+    }
+  }
+
+  async function askUtilityFlow() {
     if (!question.trim()) {
       setResponse(
         "Please enter a question."
@@ -196,6 +221,12 @@ export default function AIPage() {
     }
 
     setResponse(answer);
+
+    await saveConversation(
+      question,
+      answer,
+      scoredResults.length
+    );
   }
 
   return (
